@@ -41,15 +41,13 @@ async function regist() {
                         const requestUrl = prefix + url;
                         return await instance[propertyKey](ctx, next).then((res: any) => {
                             if (typeof res === 'object' && res != null && !Reflect.has(res, 'code')) {
-                                ctx.response.body = {
-                                    code: 200,
-                                    data: res,
-                                    msg: 'ok',
-                                }
+                                ctx.response.body = { code: 200, data: res, msg: 'ok' }
                             } else {
                                 ctx.response.body = res;
                             }
-                            logger.info(requestUrl + '返回:' + JSON.stringify(ctx.response.body));
+                            const data = ctx.response.body?.data;
+                            const l = data instanceof Array ? data.length : 0;
+                            logger.info(`${requestUrl} 返回:${l ? `（数据数量${l}条）` : ''} ${JSON.stringify(ctx.response.body, dataToStr)}`);
                         }).catch((err: any) => {
                             console.log(err);
                             if (typeof err !== 'object') {
@@ -103,3 +101,10 @@ interface ClassFunction {
 }
 
 interface Info { url: string, method: Method }
+
+function dataToStr(this: any, key: string, value: unknown) {
+    if (key === 'data' && this.data === value && value instanceof Array && value.length > 2) {
+        return value.slice(0, 2);
+    }
+    return value;
+}

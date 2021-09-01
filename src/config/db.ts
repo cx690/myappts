@@ -1,6 +1,7 @@
 import pkgSequelize from 'sequelize';
 import config from './mysql.js';
 import * as uuid from 'uuid';
+import { logger } from './logger.js';
 const { Sequelize, DataTypes } = pkgSequelize;
 export const sequelize = new Sequelize(config.database, config.username, config.password, {
 	host: config.host,
@@ -9,6 +10,10 @@ export const sequelize = new Sequelize(config.database, config.username, config.
 		max: 5,
 		min: 0,
 		idle: 30000
+	},
+	logging: msg => {
+		console.log(msg);
+		logger.info(msg);
 	}
 });
 
@@ -75,7 +80,10 @@ export function defineModel(name: string, attributes: any, { isuuid = false, pre
 		tableName: tableName,
 		timestamps: false,
 		hooks: {
-			beforeValidate: function (obj: any) {
+			beforeFind: function (options) {
+				console.log(options)
+			},
+			beforeValidate: function (obj: any, opt) {
 				const now = Date.now();
 				if (obj.isNewRecord) {
 					if (!obj.id && isuuid) {
@@ -104,7 +112,7 @@ export const QueryTypes = pkgSequelize.QueryTypes;
 
 export async function sync() {
 	// only allow create ddl in non-production environment:
-	if (process.env.NODE_ENV === 'development') {
+	if (process.env.NODE_ENV !== 'production') {
 		await sequelize.sync({
 			force: false
 		});
