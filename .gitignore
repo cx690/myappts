@@ -1,0 +1,5 @@
+/.yarnrc
+/.npmrc
+node_modules
+back-end
+dist
