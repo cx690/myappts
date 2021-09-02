@@ -4,6 +4,7 @@ import regist from './router.js';
 import 'reflect-metadata';
 import { logger } from './config/logger.js';
 import importModel from './model.js';
+import koaJwt from 'koa-jwt';
 
 const app = new koa();
 
@@ -16,13 +17,26 @@ app.use(async (ctx, next) => {
     await next();
 });
 
+app.use(async (ctx, next) => {
+    return await next().catch((err) => {
+        if (401 == err.status) {
+            ctx.status = 401;
+            ctx.body = { code: 401, msg: '缺少登录信息!' };
+        } else {
+            throw err;
+        }
+    });
+});
+
+app.use(koaJwt({
+    secret: 'this is a secret',
+    tokenKey: '233',
+    getToken: (ctx) => ctx.request.header.token?.toString() || null,
+}).unless({ path: ['/user/login'] }))
+
 app.on('error', err => {
     logger.error(JSON.stringify(err));
 })
-
-// app.use(ctx => {
-//     ctx.body = '没想到吧?！';
-// })
 
 async function run() {
     await importModel();

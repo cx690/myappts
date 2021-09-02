@@ -55,7 +55,7 @@ async function regist() {
                                 ctx.response.body = { code: 500, msg: err ?? '服务器繁忙，请稍后再试！' };
                                 ctx.response.status = 500;
                             } else {
-                                err = JSON.stringify(err);
+                                err = Object.keys(err)?.length! ? JSON.stringify(err) : '服务器繁忙，请稍后再试！';
                                 logger.error(err);
                                 ctx.response.body = { code: 500, msg: err };
                                 ctx.response.status = 500;

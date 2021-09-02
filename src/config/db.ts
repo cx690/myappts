@@ -14,7 +14,10 @@ export const sequelize = new Sequelize(config.database, config.username, config.
 	logging: msg => {
 		console.log(msg);
 		logger.info(msg);
-	}
+	},
+	query: {
+		raw: true  // 设置为 true，只返回源数据
+	},
 });
 
 sequelize.authenticate()
@@ -80,9 +83,6 @@ export function defineModel(name: string, attributes: any, { isuuid = false, pre
 		tableName: tableName,
 		timestamps: false,
 		hooks: {
-			beforeFind: function (options) {
-				console.log(options)
-			},
 			beforeValidate: function (obj: any, opt) {
 				const now = Date.now();
 				if (obj.isNewRecord) {

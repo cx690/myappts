@@ -94,11 +94,7 @@ class Gifts extends Base {
 			return { code: 200, data: res, msg: 'ok' }
 		}
 		const res = await gifts.create(ctx.request.body);
-		return {
-			code: 200,
-			data: res,
-			msg: 'ok'
-		}
+		return { code: 200, data: res, msg: 'ok' }
 	}
 
 	@required('id')
@@ -110,11 +106,7 @@ class Gifts extends Base {
 		}, {
 			where: { id }
 		});
-		return {
-			code: 200,
-			data: res,
-			msg: 'ok'
-		}
+		return { code: 200, data: res, msg: 'ok' }
 	}
 
 }
