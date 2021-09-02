@@ -27,5 +27,5 @@ log4js.configure({
 });
 
 
-export const accessLogger = log4js.getLogger('access'); //记录所有访问级别的日志
+export const accessLogger = log4js.getLogger('access'); //记录所有访问级别的日志,主要是websocket相关的
 export const logger = log4js.getLogger('application');  //记录所有应用级别的日志

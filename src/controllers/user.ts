@@ -7,7 +7,8 @@ import user from '../models/user.js';
 import { Utils } from '../utils/type.js';
 @Controller('/user')
 class User extends Base {
-	@required(['unserName', 'password'], { errMsg: '请正确输入用户名或密码！' })
+
+	@required(['account', 'password'], { errMsg: '请正确输入用户名或密码！' })
 	@post()
 	async login(ctx: Utils.ctx): Utils.Result {
 		const { account, password } = ctx.request.body;
@@ -42,7 +43,7 @@ class User extends Base {
 		return await user.findAll(option);
 	}
 
-	@required(['unserName', 'password'], { errMsg: '请正确输入用户名和密码！' })
+	@required([{ key: 'account', errMsg: '请输入账户' }, { key: 'account', errMsg: '请输入用户名' }, { key: 'password', errMsg: '请输入密码' }])
 	@post()
 	async regist(ctx: Utils.ctx): Utils.Result {
 		const { account, unserName, password, phone } = ctx.request.body;

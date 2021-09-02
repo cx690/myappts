@@ -22,6 +22,7 @@ app.use(async (ctx, next) => {
         if (401 == err.status) {
             ctx.status = 401;
             ctx.body = { code: 401, msg: '缺少登录信息!' };
+            logger.info('返回:缺少登录信息!');
         } else {
             throw err;
         }
