@@ -10,10 +10,10 @@ class User extends Base {
 	@required(['unserName', 'password'], { errMsg: '请正确输入用户名或密码！' })
 	@post()
 	async login(ctx: Utils.ctx): Utils.Result {
-		const { unserName, password } = ctx.request.body;
+		const { account, password } = ctx.request.body;
 		const res: any = await user.findOne({
 			where: {
-				name: unserName,
+				account,
 				password,
 			}
 		})
@@ -26,23 +26,29 @@ class User extends Base {
 	}
 
 	@get()
-	async allUser(ctx: Utils.ctx) {
-		const unserName = ctx.request.query.unserName;
-		return await unserName ? user.findAll({
-			where: {
-				name: {
-					[Op.like]: `%${unserName}%`
-				}
+	async userList(ctx: Utils.ctx) {
+		const { userName, account } = ctx.request.query;
+		const option: any = { attributes: { exclude: ['password'] }, where: {} };
+		if (userName) {
+			option.where.userName = {
+				[Op.like]: `%${userName}%`
 			}
-		}) : user.findAll();
+		}
+		if (account) {
+			option.where.account = {
+				[Op.like]: `%${account}%`
+			}
+		}
+		return await user.findAll(option);
 	}
 
 	@required(['unserName', 'password'], { errMsg: '请正确输入用户名和密码！' })
 	@post()
 	async regist(ctx: Utils.ctx): Utils.Result {
-		const { unserName, password, phone } = ctx.request.body;
+		const { account, unserName, password, phone } = ctx.request.body;
 		const res = await user.create({
-			name: unserName,
+			account,
+			unserName,
 			password,
 			phone,
 		});

@@ -1,4 +1,4 @@
-import { sync } from "./model";
+import { sync } from "./model.js";
 
 sync().then(() => {
 	console.log('init db ok.');
