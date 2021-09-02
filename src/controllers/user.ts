@@ -1,6 +1,7 @@
 
 import jwt from 'jsonwebtoken';
 import { Base } from '../base.js';
+import { Op } from '../config/db.js';
 import { Controller, get, post, required } from '../decorator/index.js';
 import user from '../models/user.js';
 import { Utils } from '../utils/type.js';
@@ -25,9 +26,15 @@ class User extends Base {
 	}
 
 	@get()
-	@post()
-	async allUser() {
-		return await user.findAll();
+	async allUser(ctx: Utils.ctx) {
+		const unserName = ctx.request.query.unserName;
+		return await unserName ? user.findAll({
+			where: {
+				name: {
+					[Op.like]: `%${unserName}%`
+				}
+			}
+		}) : user.findAll();
 	}
 
 	@required(['unserName', 'password'], { errMsg: '请正确输入用户名和密码！' })

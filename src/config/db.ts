@@ -109,6 +109,7 @@ export const TEXT = DataTypes.TEXT;
 export const DOUBLE = DataTypes.DOUBLE;
 export const DATEONLY = DataTypes.DATEONLY;
 export const QueryTypes = pkgSequelize.QueryTypes;
+export const Op = pkgSequelize.Op;
 
 export async function sync() {
 	// only allow create ddl in non-production environment:
