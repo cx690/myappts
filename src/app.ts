@@ -60,6 +60,14 @@ async function run() {
     const routes = await regist();
     app.use(routes);
     await registWs(io);
+    //404处理
+    app.use(async (ctx) => {
+        const status = ctx.response.status;
+        if (status === 404) {
+            ctx.body = { code: 404, msg: `找不到${ctx.request.method}请求路径!`, path: ctx.request.url };
+            ctx.response.status = 404;
+        }
+    })
     console.log('app started at port 3000...')
     server.listen(3000);
 }

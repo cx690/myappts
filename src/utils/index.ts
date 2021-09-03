@@ -17,7 +17,7 @@ export async function getPath(dirname: string, dir: string) {
 }
 
 /** 控制台打印 */
-export function clg(msg: string, talk?: Function) {
+export function clg(msg: any, talk?: Function) {
     if (process.env.NODE_ENV === 'production' || msg === '') return;
     if (talk) {
         talk(msg);
