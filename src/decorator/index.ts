@@ -2,6 +2,10 @@ import { Utils } from "../utils/type";
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
+/**
+ * 注册controller 
+ * @param prefix 路由前缀，默认为class名称的小写
+ */
 export function Controller(prefix?: string): any {
     const fn = function (target: Function, url?: string) {
         url ??= '/' + target.name.toLowerCase();
@@ -13,6 +17,11 @@ export function Controller(prefix?: string): any {
     }
 }
 
+/**
+ * 注册请求方法
+ * @param url 方法路径值，默认当前的成员函数名称
+ * @param method 请求方式
+ */
 export function Request(url?: string, method: Method = 'GET') {
     return function (target: any, propertyKey: string) {
         const info = Reflect.getMetadata('action', target.constructor, propertyKey) || [];
@@ -22,18 +31,34 @@ export function Request(url?: string, method: Method = 'GET') {
     }
 }
 
+/**
+ * 注册请求get方法
+ * @param url 方法路径值，默认当前的成员函数名称
+ */
 export function get(url?: string) {
     return Request(url, 'GET');
 }
 
+/**
+ * 注册请求post方法
+ * @param url 方法路径值，默认当前的成员函数名称
+ */
 export function post(url?: string) {
     return Request(url, 'POST');
 }
 
+/**
+ * 注册请求delete方法
+ * @param url 方法路径值，默认当前的成员函数名称
+ */
 export function del(url?: string) {
     return Request(url, 'DELETE');
 }
 
+/**
+ * 注册请求put方法
+ * @param url 方法路径值，默认当前的成员函数名称
+ */
 export function put(url?: string) {
     return Request(url, 'PUT');
 }

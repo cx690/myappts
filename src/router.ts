@@ -1,28 +1,21 @@
-import fs from 'fs';
+
 import path from 'path';
 import KoaRouter from 'koa-router';
 import { Method } from './decorator/index.js';
 import { fileURLToPath } from 'url';
 import { Utils } from './utils/type.js';
 import { logger } from './config/logger.js';
+import { getPath } from './utils/index.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const router = new KoaRouter();
-async function getPath() {
-    const urls: string[] = [];
-    const files = await fs.readdirSync(path.resolve(__dirname, './controllers'));
-    for (const name of files) {
-        urls.push('./controllers/' + name);
-    }
-    return urls;
-}
 
 async function regist() {
-    const urls = await getPath();
+    const urls = await getPath(__dirname, './controllers');
     const allClass: ClassFunction[] = [];
     (await Promise.all([...findClass(urls)])).map(v => {
         for (const key in v) {
-            if (Reflect.getMetadata('prefix', v[key]) != undefined) {
+            if (Reflect.getMetadata('prefix', v[key]) != null) {
                 allClass.push(v[key]);
             }
         }
@@ -95,7 +88,7 @@ function* findClass(urls: string[]) {
     }
 }
 
-interface ClassFunction {
+export interface ClassFunction {
     new(...args: any[]): any;
     [key: string]: any;
 }

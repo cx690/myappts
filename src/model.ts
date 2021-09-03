@@ -13,7 +13,7 @@ let js_files = files.filter((f) => {
 
 export function* importSth() {
     for (const f of js_files) {
-        console.log(`import model from file ${f}...`);
+        console.log(`regist model from file ${f}...`);
         yield import('./models/' + f);
     }
 }

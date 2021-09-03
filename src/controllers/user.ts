@@ -1,4 +1,3 @@
-
 import jwt from 'jsonwebtoken';
 import { Base } from '../base.js';
 import { Op } from '../config/db.js';
@@ -22,7 +21,7 @@ class User extends Base {
 			return { code: 400, msg: '用户名或密码错误！' }
 		} else {
 			res.password = '*';
-			return { data: res, code: 0, msg: '登陆成功！', token: jwt.sign(res, 'this is a secret') };
+			return { data: res, code: 200, msg: '登陆成功！', token: jwt.sign(res, 'this is a secret') };
 		}
 	}
 
@@ -53,12 +52,14 @@ class User extends Base {
 			password,
 			phone,
 		});
-		return { data: res, code: 0 };
+		return { data: res, code: 200 };
 	}
 
 	@get()
 	async userInfo(ctx: Utils.ctx): Utils.Result {
-		return { code: 200, data: ctx.state.user }
+		const token = ctx.state.user;
+		const user = jwt.decode(token);
+		return { code: 200, data: user }
 	}
 }
 export default User;

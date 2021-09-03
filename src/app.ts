@@ -5,8 +5,13 @@ import 'reflect-metadata';
 import { logger } from './config/logger.js';
 import importModel from './model.js';
 import koaJwt from 'koa-jwt';
+import { Server } from 'socket.io';
+import { createServer } from 'http'
+import { registWs } from './ws.js';
 
 const app = new koa();
+
+const server = createServer(app.callback());
 
 app.use(bodyParser());
 
@@ -29,22 +34,33 @@ app.use(async (ctx, next) => {
     });
 });
 
-app.use(koaJwt({
+const jwt = koaJwt({
     secret: 'this is a secret',
     tokenKey: '233',
     getToken: (ctx) => ctx.request.header.token?.toString() || null,
-}).unless({ path: ['/user/login'] }))
+})
+app.use(jwt.unless({ path: ['/user/login'] }))
 
 app.on('error', err => {
     logger.error(JSON.stringify(err));
 })
 
+const io = new Server(server, {
+    path: '/ws',
+    serveClient: false,
+    // below are engine.IO options
+    pingInterval: 10000,
+    pingTimeout: 5000,
+    cookie: true
+});
+
 async function run() {
     await importModel();
     const routes = await regist();
     app.use(routes);
+    await registWs(io);
     console.log('app started at port 3000...')
-    app.listen(3000);
+    server.listen(3000);
 }
 
 run();
