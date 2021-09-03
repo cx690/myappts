@@ -7,9 +7,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon dist/app",
+    "start": "cross-env NODE_ENV=development nodemon temp/app",
     "tsc": "tsc --watch",
-    "db": "cross-env NODE_ENV=development node dist/init-db.js"
+    "db": "cross-env NODE_ENV=development node temp/init-db.js"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
