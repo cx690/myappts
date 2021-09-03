@@ -5,7 +5,8 @@ import { Namespace } from "../decorator/wsapi.js";
 import chat, { ChatType } from "../models/chat.js";
 import jwt from 'jsonwebtoken';
 import { on } from "../decorator/wsapi.js";
-import { UserAny } from "../models/user.js";
+import { UserAny, UserType } from "../models/user.js";
+import { accessLogger } from "../config/logger.js";
 
 export const userList: UserAny[] = [];
 function deleteUser(id: string) {
@@ -21,7 +22,7 @@ class Chat extends Wsbase {
     async connection(socket: Socket) {
         const token = socket.handshake.headers.token?.toString();
         if (!token) return;
-        const user: any = jwt.decode(token);
+        const user = jwt.decode(token) as UserType;
         Object.assign(user, { socketId: socket.id });
         socket.user = user;
         userList.push(user);
@@ -31,6 +32,7 @@ class Chat extends Wsbase {
         socket.broadcast.emit('join', user);
         const record = await getRecord();
         socket.emit('record', record);
+        accessLogger.info(`用户进入聊天室：${user.userName} id:${user.id}`);
     }
 
     @on()
@@ -61,6 +63,7 @@ class Chat extends Wsbase {
     async disconnect(socket: Socket, b: any) {
         deleteUser(socket.user?.socketId);
         socket.broadcast.emit('users', userList);
+        accessLogger.info(`用户离开聊天室：${socket.user?.userName} id:${socket.user?.id}`);
         setTimeout(() => {
             socket.disconnect(true);
         }, 5000);
