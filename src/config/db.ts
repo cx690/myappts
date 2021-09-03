@@ -2,6 +2,7 @@ import pkgSequelize from 'sequelize';
 import config from './mysql.js';
 import * as uuid from 'uuid';
 import { logger } from './logger.js';
+import { clg } from '../utils/index.js';
 const { Sequelize, DataTypes } = pkgSequelize;
 export const sequelize = new Sequelize(config.database, config.username, config.password, {
 	host: config.host,
@@ -12,7 +13,7 @@ export const sequelize = new Sequelize(config.database, config.username, config.
 		idle: 30000
 	},
 	logging: msg => {
-		console.log(msg);
+		clg(msg);
 		logger.info(msg);
 	},
 	query: {
@@ -22,7 +23,7 @@ export const sequelize = new Sequelize(config.database, config.username, config.
 
 sequelize.authenticate()
 	.then(() => {
-		console.log('Connection has been established successfully.');
+		clg('Connection has been established successfully.');
 	})
 	.catch(err => {
 		console.error('Unable to connect to the database:', err);

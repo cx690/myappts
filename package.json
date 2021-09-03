@@ -7,9 +7,12 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon temp/app",
+    "start": "cross-env NODE_ENV=development nodemon cache/app",
     "tsc": "tsc --watch",
-    "db": "cross-env NODE_ENV=development node temp/init-db.js"
+    "db": "cross-env NODE_ENV=development node cache/init-db.js",
+    "build": "tsc --outDir dist && replace 'process.env.NODE_ENV' '`production`' dist -r --include='*.js' --silent",
+    "replace": "replace 'process.env.NODE_ENV' '`production`' dist -r --include='*.js'",
+    "serve": "node dist/app"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
@@ -33,6 +36,7 @@
     "@types/node": "^16.7.6",
     "@types/uuid": "^8.3.1",
     "nodemon": "^2.0.12",
+    "replace": "^1.2.1",
     "typescript": "^4.4.2"
   },
   "engines": {

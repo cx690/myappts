@@ -2,8 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import * as db from './config/db.js';
+import { clg } from './utils/index.js';
 
-console.log('init sequelize...');
+clg('init sequelize...');
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const files = fs.readdirSync(path.resolve(__dirname, './models'));
 
@@ -13,7 +14,7 @@ let js_files = files.filter((f) => {
 
 export function* importSth() {
     for (const f of js_files) {
-        console.log(`regist model from file ${f}...`);
+        clg(`regist model from file ${f}...`);
         yield import('./models/' + f);
     }
 }

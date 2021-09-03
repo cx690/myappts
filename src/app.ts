@@ -8,6 +8,7 @@ import koaJwt from 'koa-jwt';
 import { Server } from 'socket.io';
 import { createServer } from 'http'
 import { registWs } from './ws.js';
+import { clg } from './utils/index.js';
 
 const app = new koa();
 
@@ -16,7 +17,7 @@ const server = createServer(app.callback());
 app.use(bodyParser());
 
 app.use(async (ctx, next) => {
-    console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
+    clg(`Process ${ctx.request.method} ${ctx.request.url}...`);
     logger.info(`收到请求:${ctx.request.method} ${ctx.request.url}...`);
     logger.info(`参数${ctx.request.method === 'GET' ? 'query' : 'body'}:${JSON.stringify(ctx.request.method === 'GET' ? ctx.request.query : ctx.request.body)}`);
     await next();
@@ -39,7 +40,7 @@ const jwt = koaJwt({
     tokenKey: '233',
     getToken: (ctx) => ctx.request.header.token?.toString() || null,
 })
-app.use(jwt.unless({ path: ['/user/login'] }))
+app.use(jwt.unless({ path: ['/user/login', /\/gifts\//] }))
 
 app.on('error', err => {
     logger.error(JSON.stringify(err));

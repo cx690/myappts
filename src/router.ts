@@ -5,7 +5,7 @@ import { Method } from './decorator/index.js';
 import { fileURLToPath } from 'url';
 import { Utils } from './utils/type.js';
 import { logger } from './config/logger.js';
-import { getPath } from './utils/index.js';
+import { clg, getPath } from './utils/index.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const router = new KoaRouter();
@@ -42,7 +42,7 @@ async function regist() {
                             const l = data instanceof Array ? data.length : 0;
                             logger.info(`${requestUrl} 返回:${l ? `（数据数量${l}条）` : ''} ${JSON.stringify(ctx.response.body, dataToStr)}`);
                         }).catch((err: any) => {
-                            console.log(err);
+                            clg(err);
                             if (typeof err !== 'object') {
                                 logger.error(err);
                                 ctx.response.body = { code: 500, msg: err ?? '服务器繁忙，请稍后再试！' };
