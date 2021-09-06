@@ -50,7 +50,7 @@ export async function registWs(io: Server<DefaultEventsMap, DefaultEventsMap, De
 		}
 
 		namespace.on('connection', async (socket) => {
-			await instance['connection'](socket);
+			typeof instance['connection'] === 'function' && await instance['connection'](socket);
 			for (const { ev, propertyKey } of events) {
 				socket.on(ev, async (...args) => {
 					instance[propertyKey](socket, ...args);
