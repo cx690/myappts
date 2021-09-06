@@ -5,13 +5,9 @@ import type { ClassFunction } from "../utils/type.js";
  * @param nsp io切出的命名空间，默认为/+class名称的小写
  */
 export function Namespace(nsp?: string | RegExp | ParentNspNameMatchFn): any {
-    const fn = function (target: ClassFunction, url?: string | RegExp | ParentNspNameMatchFn) {
-        url ??= '/' + target.name.toLowerCase();
-        Reflect.defineMetadata('isnsp', url, target);
-    }
-
     return function (target: ClassFunction) {
-        return fn(target, nsp);
+        nsp ??= '/' + target.name.toLowerCase();
+        Reflect.defineMetadata('isnsp', nsp, target);
     }
 }
 

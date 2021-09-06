@@ -6,13 +6,9 @@ export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
  * @param prefix 路由前缀，默认为/+class名称的小写
  */
 export function Controller(prefix?: string): any {
-    const fn = function (target: ClassFunction, url?: string) {
-        url ??= '/' + target.name.toLowerCase();
-        Reflect.defineMetadata('prefix', url, target);
-    }
-
     return function (target: ClassFunction) {
-        return fn(target, prefix);
+        prefix ??= '/' + target.name.toLowerCase();
+        Reflect.defineMetadata('prefix', prefix, target);
     }
 }
 

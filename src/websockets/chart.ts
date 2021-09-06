@@ -22,7 +22,7 @@ class Chat extends Wsbase {
     async connection(socket: Socket) {
         const token = socket.handshake.headers.token?.toString();
         if (!token) return;
-        const user = jwt.decode(token) as UserType;
+        const user = jwt.decode(token) as UserAll;
         Object.assign(user, { socketId: socket.id });
         socket.user = user;
         userList.push(user);
@@ -42,7 +42,7 @@ class Chat extends Wsbase {
             const user = socket.user;
             const data: ChatType = {
                 userName: user.userName,
-                userId: user.id,
+                userId: user.id + '',
                 createdAt: now,
                 updatedAt: now,
                 content: content,
@@ -86,9 +86,11 @@ function getRecord(time = Date.now()) {
     })
 }
 
+type UserAll = UserType & { id: number, socketId: string }
+
 declare module 'socket.io' {
     class Socket {
         /** 用户数据 */
-        user?: any;
+        user: UserAll;
     }
 }

@@ -34,8 +34,8 @@ export async function registWs(io: Server<DefaultEventsMap, DefaultEventsMap, De
 	});
 	for (const item of allClass) {
 		const path = Reflect.getMetadata('isnsp', item);
-		const instance: any = new item();
 		const namespace = io.of(path);
+		const instance: any = new item(io, namespace);
 
 		const events: EV[] = []
 		for (const propertyKey of Object.getOwnPropertyNames(item.prototype)) {
