@@ -12,6 +12,7 @@ export abstract class Wsbase {
     namespace: Namespace;
     /** 顶层的websocket server */
     io: Server;
+    /** 在当前namespace被连接时自动调用的函数 */
     abstract connection(socket: Socket): Promise<any | void>
     constructor(io: Server, namespace: Namespace) {
         this.io = io;
