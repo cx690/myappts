@@ -1,5 +1,4 @@
-import { Utils } from "../utils/type";
-
+import type { ClassFunction, Ctx, Next } from "../utils/type";
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 /**
@@ -7,12 +6,12 @@ export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
  * @param prefix 路由前缀，默认为class名称的小写
  */
 export function Controller(prefix?: string): any {
-    const fn = function (target: Function, url?: string) {
+    const fn = function (target: ClassFunction, url?: string) {
         url ??= '/' + target.name.toLowerCase();
         Reflect.defineMetadata('prefix', url, target);
     }
 
-    return function (target: Function) {
+    return function (target: ClassFunction) {
         return fn(target, prefix);
     }
 }
@@ -89,7 +88,7 @@ export function required(keys: Keys, { noEmptyArray = false, errMsg, errData, er
     return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
         const old = descriptor.value;
         if (typeof old !== 'function') return;
-        descriptor.value = async function (this: any, ctx: Utils.ctx, next: Utils.next) {
+        descriptor.value = async function (this: any, ctx: Ctx, next: Next) {
             const { method } = ctx.request;
             if (method !== 'GET' && method !== 'POST') return await old.call(this, ctx, next);
             const noKeys: (string | ItemKey)[] = [];

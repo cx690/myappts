@@ -10,7 +10,7 @@ import { accessLogger } from "../config/logger.js";
 
 export const userList: UserAny[] = [];
 function deleteUser(id: string) {
-    const index = userList.findIndex(v => v.socketId == id)
+    const index = userList.findIndex(v => v.socketId === id)
     if (index > -1) {
         userList.splice(index, 1);
     }
@@ -37,7 +37,7 @@ class Chat extends Wsbase {
 
     @on()
     async chat(socket: Socket, content: string) {
-        if (content != '') {
+        if (content !== '') {
             const now = Date.now();
             const user = socket.user;
             const data: ChatType = {

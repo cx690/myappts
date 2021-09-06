@@ -3,7 +3,7 @@ import path from 'path';
 import KoaRouter from 'koa-router';
 import { Method } from './decorator/index.js';
 import { fileURLToPath } from 'url';
-import { Utils } from './utils/type.js';
+import type { ClassFunction, Ctx, Next } from './utils/type.js';
 import { logger } from './config/logger.js';
 import { clg, getPath } from './utils/index.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -30,7 +30,7 @@ async function regist() {
                 for (const item of list) {
                     const { url, method } = item;
                     if (typeof instance[propertyKey] !== 'function') continue;
-                    const fn = async (ctx: Utils.ctx, next: Utils.next) => {
+                    const fn = async (ctx: Ctx, next: Next) => {
                         const requestUrl = prefix + url;
                         return await instance[propertyKey](ctx, next).then((res: any) => {
                             if (typeof res === 'object' && res != null && !Reflect.has(res, 'code')) {
@@ -86,11 +86,6 @@ function* findClass(urls: string[]) {
     for (const path of urls) {
         yield import(path);
     }
-}
-
-export interface ClassFunction {
-    new(...args: any[]): any;
-    [key: string]: any;
 }
 
 interface Info { url: string, method: Method }

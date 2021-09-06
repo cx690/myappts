@@ -3,12 +3,12 @@ import { QueryTypes, sequelize } from '../config/db.js';
 import mysqlCfg from '../config/mysql.js';
 import { Controller, post, required } from '../decorator/index.js';
 import gifts from '../models/gifts.js';
-import { Utils } from '../utils/type.js';
+import type { Ctx, Result } from '../utils/type.js';
 
 @Controller()
 class Gifts extends Base {
 	@post()
-	async all(ctx: Utils.ctx): Utils.Result {
+	async all(ctx: Ctx): Result {
 		const { time, kw, sigin } = ctx.request.body;
 		let where = `select * from ${mysqlCfg.prefix}gifts where hidden = 0`;
 		if (time && time.length) {
@@ -70,7 +70,7 @@ class Gifts extends Base {
 
 	@required('id')
 	@post()
-	async one(ctx: Utils.ctx): Utils.Result {
+	async one(ctx: Ctx): Result {
 		const { id } = ctx.request.body;
 		const data = await gifts.findOne({
 			where: { id }
@@ -79,7 +79,7 @@ class Gifts extends Base {
 	}
 
 	@post()
-	async save(ctx: Utils.ctx): Utils.Result {
+	async save(ctx: Ctx): Result {
 		const { id } = ctx.request.body;
 		if (id) {
 			const parms = ctx.request.body || {};
@@ -99,7 +99,7 @@ class Gifts extends Base {
 
 	@required('id')
 	@post()
-	async delete(ctx: Utils.ctx): Utils.Result {
+	async delete(ctx: Ctx): Result {
 		const { id } = ctx.request.body;
 		const res = await gifts.update({
 			hidden: 1,

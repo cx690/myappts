@@ -8,7 +8,7 @@ clg('init sequelize...');
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const files = fs.readdirSync(path.resolve(__dirname, './models'));
 
-let js_files = files.filter((f) => {
+const js_files = files.filter((f) => {
     return f.endsWith('.js');
 });
 

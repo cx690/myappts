@@ -1,5 +1,5 @@
 import { defineModel, STRING } from '../config/db.js';
-import { Utils } from '../utils/type.js';
+import { Dict, Fiels } from '../utils/type.js';
 const user = defineModel('user', {
 	account: STRING(255),//账户
 	userName: STRING(255),//用户名称
@@ -18,6 +18,6 @@ export type UserDto = {
 	phone?: string;
 }
 
-export type UserType = UserDto & Utils.Fiels;
+export type UserType = UserDto & Fiels;
 
-export type UserAny<T = any> = UserType & Utils.Dict<T>;
+export type UserAny<T = any> = UserType & Dict<T>;
