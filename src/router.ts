@@ -70,7 +70,7 @@ async function regist() {
                             break;
                         default:
                             const a: never = method;
-                            console.warn('存在未知的请求方式，请注册:' + a);
+                            console.warn('存在未知的请求方式，请注册:' + a);/* eslint-disable-line no-console */
                             break;
                     }
                 }

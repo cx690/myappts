@@ -22,6 +22,6 @@ export function clg(msg: any, talk?: Function) {
     if (talk) {
         talk(msg);
     } else {
-        console.log(msg)
+        console.log(msg);/* eslint-disable-line no-console */
     }
 }

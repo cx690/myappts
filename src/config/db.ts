@@ -26,7 +26,7 @@ sequelize.authenticate()
 		clg('Connection has been established successfully.');
 	})
 	.catch(err => {
-		console.error('Unable to connect to the database:', err);
+		console.error('Unable to connect to the database:', err);/* eslint-disable-line no-console */
 		process.exit(0);
 	});
 
@@ -84,7 +84,7 @@ export function defineModel(name: string, attributes: any, { isuuid = false, pre
 		tableName: tableName,
 		timestamps: false,
 		hooks: {
-			beforeValidate: function (obj: any, opt) {
+			beforeValidate: function (obj: any) {
 				const now = Date.now();
 				if (obj.isNewRecord) {
 					if (!obj.id && isuuid) {

@@ -25,7 +25,7 @@ app.use(async (ctx, next) => {
 
 app.use(async (ctx, next) => {
     return await next().catch((err) => {
-        if (401 == err.status) {
+        if (401 === err.status) {
             ctx.status = 401;
             ctx.body = { code: 401, msg: '缺少登录信息!' };
             logger.info('返回:缺少登录信息!');
@@ -68,7 +68,7 @@ async function run() {
             ctx.response.status = 404;
         }
     })
-    console.log('app started at port 3000...')
+    console.log('app started at port 3000...');/* eslint-disable-line no-console */
     server.listen(3000);
 }
 
