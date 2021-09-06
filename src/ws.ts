@@ -11,6 +11,11 @@ const nspList: NSP[] = [];
 
 export function getNspList(): NSP[];
 export function getNspList(path: string): NSP | null;
+/**
+ * 获取所有namespace信息，或者获取指定路径的namespace信息
+ * @param path 指定的路径
+ * @returns namespace信息
+ */
 export function getNspList(path?: string) {
 	if (path === undefined) return nspList;
 	return nspList.find(v => v.path === path) ?? null;
