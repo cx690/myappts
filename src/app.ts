@@ -35,12 +35,11 @@ app.use(async (ctx, next) => {
     });
 });
 
-const jwt = koaJwt({
+app.use(koaJwt({
     secret: 'this is a secret',
     tokenKey: '233',
     getToken: (ctx) => ctx.request.header.token?.toString() || null,
-})
-app.use(jwt.unless({ path: ['/user/login', /\/gifts\//] }))
+}).unless({ path: ['/user/login', /\/gifts\//] }))
 
 app.on('error', err => {
     logger.error(JSON.stringify(err));
