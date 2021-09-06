@@ -2,13 +2,12 @@ import path from 'path';
 import { Namespace, Server } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { fileURLToPath } from 'url';
-import { ClassFunction } from './router.js';
 import { getPath } from './utils/index.js';
+import type { ClassFunction } from './utils/type.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const nspList: NSP[] = [];
-
 
 export function getNspList(): NSP[];
 export function getNspList(path: string): NSP | null;
