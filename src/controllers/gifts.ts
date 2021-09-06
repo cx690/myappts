@@ -1,6 +1,5 @@
 import { Base } from '../utils/base.js';
-import { QueryTypes, sequelize } from '../config/db.js';
-import mysqlCfg from '../config/mysql.js';
+import { Op } from '../config/db.js';
 import { Controller, post, required } from '../decorator/index.js';
 import gifts from '../models/gifts.js';
 import type { Ctx, Result } from '../utils/type.js';
@@ -10,20 +9,37 @@ class Gifts extends Base {
 	@post()
 	async all(ctx: Ctx): Result {
 		const { time, kw, sigin } = ctx.request.body;
-		let where = `select * from ${mysqlCfg.prefix}gifts where hidden = 0`;
+		const option: any = {
+			where: {
+				hidden: 0,
+			},
+			order: ['createdAt']
+		}
+
 		if (time && time.length) {
-			where += ` and createdAt > ${new Date(time[0]).getTime()} and createdAt < ${new Date(time[1]).getTime()}`;
+			option.where.createdAt = {
+				[Op.gt]: new Date(time[0]).getTime(),
+				[Op.lt]: new Date(time[1]).getTime(),
+			}
 		}
+
 		if (kw) {
-			where += ` and (name like '%${kw}%' or \`desc\` like '%${kw}%')`;
+			option.where[Op.or] = {
+				name: {
+					[Op.like]: `%${kw}%`,
+				},
+				desc: {
+					[Op.like]: `%${kw}%`
+				}
+			}
 		}
+
 		if (sigin !== undefined && sigin !== '') {
-			where += ` and \`sigin\` = ${sigin}`;
+			option.where.sigin = sigin;
 		}
-		where += ' order by createdAt desc';
-		const data: any[] = await sequelize.query(where, {
-			type: QueryTypes.SELECT
-		});
+
+		const data: any[] = await gifts.findAll(option);
+
 		let total = 0;
 		for (const item of data) {
 			const { price, pay, sigin, status } = item;
