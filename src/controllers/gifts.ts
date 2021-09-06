@@ -1,4 +1,4 @@
-import { Base } from '../base.js';
+import { Base } from '../utils/base.js';
 import { QueryTypes, sequelize } from '../config/db.js';
 import mysqlCfg from '../config/mysql.js';
 import { Controller, post, required } from '../decorator/index.js';

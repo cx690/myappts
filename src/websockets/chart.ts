@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { Wsbase } from "../base.js";
+import { Wsbase } from "../utils/base.js";
 import { Op } from "../config/db.js";
 import { Namespace } from "../decorator/wsapi.js";
 import chat, { ChatType } from "../models/chat.js";

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { Base } from '../base.js';
+import { Base } from '../utils/base.js';
 import { Op } from '../config/db.js';
 import { Controller, get, post, required } from '../decorator/index.js';
 import user from '../models/user.js';
