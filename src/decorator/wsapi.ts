@@ -2,7 +2,7 @@ import type { ClassFunction } from "../utils/type.js";
 
 /**
  * 注册namespace 
- * @param nsp io切出的命名空间，默认为class名称的小写
+ * @param nsp io切出的命名空间，默认为/+class名称的小写
  */
 export function Namespace(nsp?: string | RegExp | ParentNspNameMatchFn): any {
     const fn = function (target: ClassFunction, url?: string | RegExp | ParentNspNameMatchFn) {

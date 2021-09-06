@@ -3,7 +3,7 @@ export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 /**
  * 注册controller 
- * @param prefix 路由前缀，默认为class名称的小写
+ * @param prefix 路由前缀，默认为/+class名称的小写
  */
 export function Controller(prefix?: string): any {
     const fn = function (target: ClassFunction, url?: string) {
