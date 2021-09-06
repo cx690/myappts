@@ -60,7 +60,7 @@ class Chat extends Wsbase {
     }
 
     @on()
-    async disconnect(socket: Socket, b: any) {
+    async disconnect(socket: Socket) {
         deleteUser(socket.user?.socketId);
         socket.broadcast.emit('users', userList);
         accessLogger.info(`用户离开聊天室：${socket.user?.userName} id:${socket.user?.id}`);
