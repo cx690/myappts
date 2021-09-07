@@ -30,8 +30,6 @@ class Chat extends Wsbase {
         socket.emit('users', userList);
         socket.broadcast.emit('users', userList);
         socket.broadcast.emit('join', user);
-        const record = await getRecord();
-        socket.emit('record', record);
         accessLogger.info(`用户进入聊天室：${user.userName} id:${user.id}`);
     }
 
