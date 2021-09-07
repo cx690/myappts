@@ -40,7 +40,7 @@ class Chat extends Wsbase {
             const user = socket.user;
             const data: ChatType = {
                 userName: user.userName,
-                userId: user.id + '',
+                userId: user.id,
                 createdAt: now,
                 updatedAt: now,
                 content: content,

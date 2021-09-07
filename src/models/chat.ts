@@ -16,7 +16,7 @@ export default chat;
 export type ChatDto = {
 	userName: string;
 	header?: string;
-	userId: string;
+	userId: number;
 	/** 消息数据 */
 	content: string;
 }
