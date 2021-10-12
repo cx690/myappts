@@ -40,7 +40,7 @@ export async function registWs(io: Server<DefaultEventsMap, DefaultEventsMap, De
 		const events: EV[] = []
 		for (const propertyKey of Object.getOwnPropertyNames(item.prototype)) {
 			if (propertyKey === 'constructor' || propertyKey === 'connection') continue;
-			const ev = Reflect.getMetadata('action', item, propertyKey);
+			const ev = Reflect.getMetadata('action', item.prototype, propertyKey);
 			if (ev) {
 				events.push({
 					ev,

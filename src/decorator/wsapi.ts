@@ -18,7 +18,7 @@ export function Namespace(nsp?: string | RegExp | ParentNspNameMatchFn): any {
 export function on(ev?: string) {
     return function (target: any, propertyKey: string) {
         ev ??= propertyKey;
-        Reflect.defineMetadata('action', ev, target.constructor, propertyKey);
+        Reflect.defineMetadata('action', ev, target, propertyKey);
     }
 }
 

@@ -19,10 +19,10 @@ export function Controller(prefix?: string): any {
  */
 export function Request(url?: string, method: Method = 'GET') {
     return function (target: any, propertyKey: string) {
-        const info = Reflect.getMetadata('action', target.constructor, propertyKey) || [];
+        const info = Reflect.getMetadata('action', target, propertyKey) || [];
         url ??= '/' + propertyKey;
         info.push({ url, method });
-        Reflect.defineMetadata('action', info, target.constructor, propertyKey);
+        Reflect.defineMetadata('action', info, target, propertyKey);
     }
 }
 

@@ -25,7 +25,7 @@ async function regist() {
         const instance: any = new item();
         for (const propertyKey of Object.getOwnPropertyNames(item.prototype)) {
             if (propertyKey === 'constructor') continue;
-            const list: Info[] = Reflect.getMetadata('action', item, propertyKey);
+            const list: Info[] = Reflect.getMetadata('action', item.prototype, propertyKey);
             if (list && list instanceof Array) {
                 for (const item of list) {
                     const { url, method } = item;
