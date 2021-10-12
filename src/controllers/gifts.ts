@@ -1,6 +1,6 @@
 import { Base } from '../utils/base.js';
 import { Op } from '../config/db.js';
-import { Controller, post, required } from '../decorator/index.js';
+import { Controller, get, post, required } from '../decorator/index.js';
 import gifts from '../models/gifts.js';
 import type { Ctx, Result } from '../utils/type.js';
 
@@ -8,7 +8,7 @@ import type { Ctx, Result } from '../utils/type.js';
 class Gifts extends Base {
 	@post()
 	async all(ctx: Ctx): Result {
-		const { time, kw, sigin } = ctx.request.body;
+		const { time, kw, sigin, type } = ctx.request.body;
 		const option: any = {
 			where: {
 				hidden: 0,
@@ -32,6 +32,10 @@ class Gifts extends Base {
 					[Op.like]: `%${kw}%`
 				}
 			}
+		}
+
+		if (type) {
+			option.where.type = type;
 		}
 
 		if (sigin !== undefined && sigin !== '') {
@@ -101,6 +105,7 @@ class Gifts extends Base {
 			const parms = ctx.request.body || {};
 			const res = await gifts.update({
 				...parms,
+				type: parms.type ?? null,
 				updatedAt: Date.now()
 			}, {
 				where: {
@@ -125,5 +130,17 @@ class Gifts extends Base {
 		return { code: 200, data: res, msg: 'ok' }
 	}
 
+	@get()
+	async typeList() {
+		return await gifts.findAll({
+			attributes: [['type', 'value']],
+			group: 'type',
+			where: {
+				type: {
+					[Op.not]: null,
+				}
+			}
+		})
+	}
 }
 export default Gifts;

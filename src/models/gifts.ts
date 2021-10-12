@@ -20,6 +20,10 @@ const gifts = defineModel('gifts', {
 		allowNull: true,
 	},
 	price: FLOAT(10),
+	type: {
+		type: STRING(255),
+		allowNull: true,
+	},
 	hidden: {
 		type: INTEGER({ length: 1 }),
 		defaultValue: 0,
@@ -57,6 +61,8 @@ export type GiftsDto = {
 	/** 金额 */
 	price: number;
 	/** 隐藏状态 非零为隐藏 */
+	/** 类型分类 */
+	type?: string;
 	hidden: number;
 }
 
