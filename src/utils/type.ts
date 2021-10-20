@@ -19,10 +19,6 @@ export type Fiels<ID extends (string | number) = number> = {
     version?: number;
 }
 
-export type Dict<T = any> = {
-    [key: string]: T;
-}
-
 export interface ClassFunction {
     new(...args: any[]): any;
     [key: string]: any;

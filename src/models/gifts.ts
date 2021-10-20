@@ -1,5 +1,5 @@
 import { defineModel, STRING, FLOAT, INTEGER } from '../config/db.js';
-import { Dict, Fiels } from '../utils/type.js';
+import { Fiels } from '../utils/type.js';
 
 const gifts = defineModel('gifts', {
 	name: STRING(255),
@@ -68,4 +68,4 @@ export type GiftsDto = {
 
 export type GiftsType = GiftsDto & Fiels;
 
-export type GiftsAny<T = any> = GiftsType & Dict<T>;
+export type GiftsAny<T = any> = GiftsType & Record<string, T>;

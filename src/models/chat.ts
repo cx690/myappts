@@ -1,5 +1,5 @@
 import { defineModel, STRING, INTEGER } from '../config/db.js';
-import { Dict, Fiels } from '../utils/type.js';
+import { Fiels } from '../utils/type.js';
 
 const chat = defineModel('chat', {
 	userName: STRING(255),//用户名称
@@ -23,4 +23,4 @@ export type ChatDto = {
 
 export type ChatType = ChatDto & Fiels;
 
-export type ChatAny<T = any> = ChatType & Dict<T>;
+export type ChatAny<T = any> = ChatType & Record<string, T>;
