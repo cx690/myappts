@@ -7,13 +7,13 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon cache/app",
-    "tsc": "tsc --watch",
-    "db": "cross-env NODE_ENV=development node cache/init-db.js",
-    "build": "npm run lint && tsc --outDir dist && replace 'process.env.NODE_ENV' '`production`' dist -r --include='*.js' --silent",
+    "start": "cross-env NODE_ENV=development npx nodemon",
+    "db": "cross-env NODE_ENV=development ts-node src/init-db.ts",
+    "build": "npm run lint && npm run copy && tsc --outDir dist && replace 'process.env.NODE_ENV' '`production`' dist -r --include='*.js' --silent",
     "replace": "replace 'process.env.NODE_ENV' '`production`' dist -r --include='*.js'",
     "serve": "node dist/app",
-    "lint": "eslint src/** --ext .js,.ts"
+    "lint": "eslint src/** --ext .js,.ts",
+    "copy": "node copy.js"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
@@ -39,9 +39,10 @@
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/parser": "^4.30.0",
     "eslint": "^7.32.0",
-    "nodemon": "^2.0.12",
+    "nodemon": "^2.0.14",
     "replace": "^1.2.1",
-    "typescript": "^4.4.2"
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
   },
   "engines": {
     "node": ">=14"
