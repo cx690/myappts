@@ -13,7 +13,7 @@ import { registWs } from './ws.js';
 import { clg } from './utils/index.js';
 
 if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "development") {
-    console.log(`Primary ${process.pid} is running`);
+    console.log(`Primary ${process.pid} is running`);/* eslint-disable-line no-console */
 
     // 衍生工作进程。    
     const numCPUs = cpus().length;
@@ -22,7 +22,7 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
     }
 
     cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} died,code:${code},signal:${signal} !`);
+        console.log(`worker ${worker.process.pid} died,code:${code},signal:${signal} !`);/* eslint-disable-line no-console */
     });
 } else {
     const app = new koa();
@@ -88,5 +88,5 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
 
     run();
 
-    console.log(`Worker ${process.pid} started`);
+    console.log(`Worker ${process.pid} started`);/* eslint-disable-line no-console */
 }
