@@ -2,7 +2,6 @@
   "name": "myapp-ts",
   "version": "1.0.0",
   "description": "demo",
-  "main": "index.js",
   "author": "caixue 1256953820@qq.com",
   "license": "MIT",
   "type": "module",
