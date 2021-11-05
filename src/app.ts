@@ -11,6 +11,7 @@ import koaJwt from 'koa-jwt';
 import { Server } from 'socket.io';
 import { registWs } from './ws.js';
 import { clg } from './utils/index.js';
+import { connectDb } from './config/db.js';
 
 if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "development") {
     console.log(`Primary ${process.pid} is running`);/* eslint-disable-line no-console */
@@ -70,6 +71,7 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
     });
 
     async function run() {
+        await connectDb;
         await importModel();
         const routes = await regist();
         app.use(routes);

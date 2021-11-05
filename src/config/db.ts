@@ -21,7 +21,7 @@ export const sequelize = new Sequelize(config.database, config.username, config.
 	},
 });
 
-sequelize.authenticate()
+export const connectDb = sequelize.authenticate()
 	.then(() => {
 		clg('Connection has been established successfully.');
 	})
