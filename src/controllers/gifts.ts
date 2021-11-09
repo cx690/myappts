@@ -85,7 +85,7 @@ class Gifts extends Base {
 	@post()
 	async save(ctx: Ctx): Result {
 		const { id } = ctx.request.body;
-		const parms = new _Gifts(ctx.request.body);
+		const parms = gifts.create(ctx.request.body as Record<string, any>);
 		if (id) {
 			const res = await gifts.createQueryBuilder().update().set(parms).where('id = :id', { id }).execute();
 			return { code: 200, data: res, msg: 'ok' }

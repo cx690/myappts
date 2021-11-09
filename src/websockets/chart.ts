@@ -38,7 +38,7 @@ class Chat extends Wsbase {
     async chat(socket: Socket, content: string) {
         if (content !== '') {
             const user = socket.user;
-            const insert = new _Chat({
+            const insert = chat.create({
                 userName: user.userName,
                 userId: user.id,
                 content: content,

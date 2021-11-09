@@ -4,17 +4,6 @@ import { BaseEntity } from "../utils/base.js";
 
 @Entity({ name: `${prefix}user` })
 class User extends BaseEntity {
-	constructor(param?: Record<string, any>) {
-		super();
-		if (typeof param === 'object' && param !== null) {
-			this.account = param.account;
-			this.userName = param.userName;
-			this.password = param.password;
-			this.header = param.header;
-			this.phone = param.phone;
-		}
-	}
-
 	/** 账户 */
 	@Column()
 	account: string

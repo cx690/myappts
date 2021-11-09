@@ -42,7 +42,7 @@ class User extends Base {
 	@required([{ key: 'account', errMsg: '请输入账户' }, { key: 'account', errMsg: '请输入用户名' }, { key: 'password', errMsg: '请输入密码' }])
 	@post()
 	async regist(ctx: Ctx): Result {
-		const insert = new _User(ctx.request.body)
+		const insert = user.create(ctx.request.body as Record<string, any>)
 		const res = await user.save(insert);
 		return { data: res, code: 200 };
 	}
