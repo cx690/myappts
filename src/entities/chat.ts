@@ -4,7 +4,7 @@ import { BaseEntity } from "../utils/base.js";
 
 @Entity({ name: `${prefix}chat` })
 class Chat extends BaseEntity {
-	constructor(param?: any) {
+	constructor(param?: Record<string, any>) {
 		super();
 		if (typeof param === 'object' && param !== null) {
 			this.userName = param.userName;
