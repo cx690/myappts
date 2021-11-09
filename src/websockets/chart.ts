@@ -69,7 +69,7 @@ class Chat extends Wsbase {
 export default Chat;
 
 function getRecord(time: number = Date.now()) {
-    return chat.createQueryBuilder().where('createdAt < :time', { time }).orderBy('createdAt', 'DESC').limit(10).getMany();
+    return chat.createQueryBuilder().where('createdAt <= :time', { time }).orderBy('createdAt', 'DESC').limit(10).getMany();
 }
 
 type UserAll = _User & { id: number, socketId: string }

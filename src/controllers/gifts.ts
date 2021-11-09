@@ -13,7 +13,7 @@ class Gifts extends Base {
 		let query = gifts.createQueryBuilder().where('hidden = 0');
 
 		if (time && time.length) {
-			query = query.andWhere('createdAt > :start and createdAt < :end', { start: new Date(time[0]).getTime(), end: new Date(time[1]).getTime() });
+			query = query.andWhere('createdAt >= :start and createdAt <= :end', { start: new Date(time[0]).getTime(), end: new Date(time[1]).getTime() });
 		}
 
 		if (kw) {

@@ -31,7 +31,6 @@ export class BaseEntity {
         type: 'bigint',
         width: 15,
         nullable: false,
-        default: 0,
         transformer: {
             from: (value?: number | null) => {
                 return value ? +value : value;
