@@ -48,9 +48,12 @@ async function regist() {
                                 ctx.response.body = { code: 500, msg: err ?? '服务器繁忙，请稍后再试！' };
                                 ctx.response.status = 500;
                             } else {
-                                err = Object.keys(err)?.length! ? JSON.stringify(err) : '服务器繁忙，请稍后再试！';
-                                logger.error(err);
-                                ctx.response.body = { code: 500, msg: err };
+                                logger.error(JSON.stringify(err));
+                                ctx.response.body = {
+                                    code: 500,
+                                    msg: process.env.NODE_ENV === 'production' ? '服务器繁忙，请稍后再试！' : '服务器内部错误！',
+                                    err: process.env.NODE_ENV === 'production' ? undefined : err,
+                                };
                                 ctx.response.status = 500;
                             }
                         });//保证内部this指针正常
