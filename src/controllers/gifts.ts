@@ -27,7 +27,7 @@ class Gifts extends Base {
 		if (sigin !== undefined && sigin !== '') {
 			query = query.andWhere('sigin = :sigin', { sigin });
 		}
-		query = query.orderBy('gifts.createdAt', 'DESC');
+		query = query.orderBy('createdAt', 'DESC');
 		const data = await query.getMany();
 
 		let total = 0;
@@ -104,7 +104,7 @@ class Gifts extends Base {
 
 	@get()
 	async typeList() {
-		return await gifts.createQueryBuilder('gifts').select(['type as value']).where('gifts.type is not null').groupBy('gifts.type').getRawMany();
+		return await gifts.createQueryBuilder().select(['type as value']).where('type is not null').groupBy('type').getRawMany();
 	}
 }
 export default Gifts;
