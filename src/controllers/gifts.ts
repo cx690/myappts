@@ -27,7 +27,7 @@ class Gifts extends Base {
 		if (sigin !== undefined && sigin !== '') {
 			query = query.andWhere('sigin = :sigin', { sigin });
 		}
-		query = query.orderBy('gifts.createdAt');
+		query = query.orderBy('gifts.createdAt', 'DESC');
 		const data = await query.getMany();
 
 		let total = 0;
