@@ -1,14 +1,15 @@
 import { Socket } from "socket.io";
 import { Wsbase } from "../utils/base.js";
-import { Op } from "../config/db.js";
 import { Namespace } from "../decorator/wsapi.js";
-import chat, { ChatType } from "../models/chat.js";
 import jwt from 'jsonwebtoken';
 import { on } from "../decorator/wsapi.js";
-import { UserAny, UserType } from "../models/user.js";
 import { accessLogger } from "../config/logger.js";
+import { getRepository } from 'typeorm';
+import type _User from '../entities/user.js';
+import _Chat from '../entities/chat.js';
+const chat = getRepository(_Chat);
 
-export const userList: UserAny[] = [];
+export const userList: (_User & Record<string, any>)[] = [];
 function deleteUser(id: string) {
     const index = userList.findIndex(v => v.socketId === id)
     if (index > -1) {
@@ -36,18 +37,15 @@ class Chat extends Wsbase {
     @on()
     async chat(socket: Socket, content: string) {
         if (content !== '') {
-            const now = Date.now();
             const user = socket.user;
-            const data: ChatType = {
+            const insert = new _Chat({
                 userName: user.userName,
                 userId: user.id,
-                createdAt: now,
-                updatedAt: now,
                 content: content,
-            }
-            const res: any = await chat.create(data);
-            socket.broadcast.emit('chat', res.dataValues);
-            socket.emit('chat', res.dataValues);
+            })
+            const res: any = await chat.save(insert);
+            socket.broadcast.emit('chat', res);
+            socket.emit('chat', res);
         }
     }
 
@@ -70,21 +68,11 @@ class Chat extends Wsbase {
 
 export default Chat;
 
-function getRecord(time = Date.now()) {
-    return chat.findAll({
-        where: {
-            createdAt: {
-                [Op.lt]: time
-            }
-        },
-        order: [
-            ['createdAt', 'DESC'],
-        ],
-        limit: 10,
-    })
+function getRecord(time: number = Date.now()) {
+    return chat.createQueryBuilder().where('createdAt < :time', { time }).orderBy('createdAt', 'DESC').limit(10).getMany();
 }
 
-type UserAll = UserType & { id: number, socketId: string }
+type UserAll = _User & { id: number, socketId: string }
 
 declare module 'socket.io' {
     class Socket {

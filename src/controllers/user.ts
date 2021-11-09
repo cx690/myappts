@@ -1,9 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { Base } from '../utils/base.js';
-import { Op } from '../config/db.js';
 import { Controller, get, post, required } from '../decorator/index.js';
-import user from '../models/user.js';
 import type { Ctx, Result } from '../utils/type.js';
+import { getRepository } from 'typeorm';
+import _User from '../entities/user.js';
+const user = getRepository(_User);
+
 @Controller('/user')
 class User extends Base {
 
@@ -11,47 +13,37 @@ class User extends Base {
 	@post()
 	async login(ctx: Ctx): Result {
 		const { account, password } = ctx.request.body;
-		const res: any = await user.findOne({
-			where: {
-				account,
-				password,
-			}
-		})
+		const res = await user.createQueryBuilder().where('account = :account and password = :password', { account, password }).getOne();
+
 		if (!res) {
 			return { code: 400, msg: '用户名或密码错误！' }
 		} else {
-			res.password = '*';
-			return { data: res, code: 200, msg: '登陆成功！', token: jwt.sign(res, 'this is a secret') };
+			return { data: res, code: 200, msg: '登陆成功！', token: jwt.sign({ ...res }, 'this is a secret') };
 		}
 	}
 
 	@get()
 	async userList(ctx: Ctx) {
 		const { userName, account } = ctx.request.query;
-		const option: any = { attributes: { exclude: ['password'] }, where: {} };
+		let query = user.createQueryBuilder();
 		if (userName) {
-			option.where.userName = {
-				[Op.like]: `%${userName}%`
-			}
+			query = query.where('userName like :userName', { userName: `%${userName}%` });
 		}
 		if (account) {
-			option.where.account = {
-				[Op.like]: `%${account}%`
+			if (userName) {
+				query = query.andWhere('account like :account', { account: `%${account}%` });
+			} else {
+				query = query.where('account like :account', { account: `%${account}%` });
 			}
 		}
-		return await user.findAll(option);
+		return await query.getMany();
 	}
 
 	@required([{ key: 'account', errMsg: '请输入账户' }, { key: 'account', errMsg: '请输入用户名' }, { key: 'password', errMsg: '请输入密码' }])
 	@post()
 	async regist(ctx: Ctx): Result {
-		const { account, unserName, password, phone } = ctx.request.body;
-		const res = await user.create({
-			account,
-			unserName,
-			password,
-			phone,
-		});
+		const insert = new _User(ctx.request.body)
+		const res = await user.save(insert);
 		return { data: res, code: 200 };
 	}
 

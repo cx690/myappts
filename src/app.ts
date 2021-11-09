@@ -6,12 +6,11 @@ import bodyParser from 'koa-bodyparser';
 import regist from './router.js';
 import 'reflect-metadata';
 import { logger } from './config/logger.js';
-import importModel from './model.js';
 import koaJwt from 'koa-jwt';
 import { Server } from 'socket.io';
 import { registWs } from './ws.js';
 import { clg } from './utils/index.js';
-import { connectDb } from './config/db.js';
+import connectDb from './entity.js';
 
 if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "development") {
     console.log(`Primary ${process.pid} is running`);/* eslint-disable-line no-console */
@@ -71,8 +70,7 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
     });
 
     async function run() {
-        await connectDb;
-        await importModel();
+        await connectDb();
         const routes = await regist();
         app.use(routes);
         await registWs(io);

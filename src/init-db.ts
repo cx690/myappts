@@ -1,9 +1,9 @@
-import { sync } from "./model.js";
+import connectDb from "./entity.js";
 
-sync().then(() => {
-	console.log('init db ok.');/* eslint-disable-line no-console */
-	process.exit(0);
-}).catch((e: any) => {
-	console.error(e);/* eslint-disable-line no-console */
-	process.exit(0);
-});
+if (process.env.NODE_ENV === 'production') {
+    throw new Error(`Can't use synchronize action on production!`);
+}
+connectDb(true).then(() => {
+    console.log('Init database successfuly!');/* eslint-disable-line no-console */
+    process.exit(0);
+})

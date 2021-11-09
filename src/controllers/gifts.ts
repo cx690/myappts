@@ -1,51 +1,37 @@
 import { Base } from '../utils/base.js';
-import { Op } from '../config/db.js';
 import { Controller, get, post, required } from '../decorator/index.js';
-import gifts from '../models/gifts.js';
 import type { Ctx, Result } from '../utils/type.js';
+import { getRepository } from 'typeorm';
+import _Gifts from '../entities/gifts.js'
+const gifts = getRepository(_Gifts);
 
 @Controller()
 class Gifts extends Base {
 	@post()
 	async all(ctx: Ctx): Result {
 		const { time, kw, sigin, type } = ctx.request.body;
-		const option: any = {
-			where: {
-				hidden: 0,
-			},
-			order: ['createdAt']
-		}
+		let query = gifts.createQueryBuilder().where('hidden = 0');
 
 		if (time && time.length) {
-			option.where.createdAt = {
-				[Op.gt]: new Date(time[0]).getTime(),
-				[Op.lt]: new Date(time[1]).getTime(),
-			}
+			query = query.andWhere('createdAt > :start and createdAt < :end', { start: new Date(time[0]).getTime(), end: new Date(time[1]).getTime() });
 		}
 
 		if (kw) {
-			option.where[Op.or] = {
-				name: {
-					[Op.like]: `%${kw}%`,
-				},
-				desc: {
-					[Op.like]: `%${kw}%`
-				}
-			}
+			query = query.andWhere('(`name` like :kw or `desc` like :kw)', { kw: `%${kw}%`, });
 		}
 
 		if (type) {
-			option.where.type = type;
+			query = query.andWhere('type = :type', { type });
 		}
 
 		if (sigin !== undefined && sigin !== '') {
-			option.where.sigin = sigin;
+			query = query.andWhere('sigin = :sigin', { sigin });
 		}
-
-		const data: any[] = await gifts.findAll(option);
+		query = query.orderBy('gifts.createdAt');
+		const data = await query.getMany();
 
 		let total = 0;
-		for (const item of data) {
+		for (const item of data as any[]) {
 			const { price, pay, sigin, status } = item;
 			total += price;
 			switch (pay) {
@@ -92,29 +78,19 @@ class Gifts extends Base {
 	@post()
 	async one(ctx: Ctx): Result {
 		const { id } = ctx.request.body;
-		const data = await gifts.findOne({
-			where: { id }
-		})
+		const data = await gifts.createQueryBuilder().where('id = :id', { id }).getOne();
 		return { code: 200, data: data, msg: 'ok' }
 	}
 
 	@post()
 	async save(ctx: Ctx): Result {
 		const { id } = ctx.request.body;
+		const parms = new _Gifts(ctx.request.body);
 		if (id) {
-			const parms = ctx.request.body || {};
-			const res = await gifts.update({
-				...parms,
-				type: parms.type ?? null,
-				updatedAt: Date.now()
-			}, {
-				where: {
-					id,
-				}
-			});
+			const res = await gifts.createQueryBuilder().update().set(parms).where('id = :id', { id }).execute();
 			return { code: 200, data: res, msg: 'ok' }
 		}
-		const res = await gifts.create(ctx.request.body);
+		const res = await gifts.save(parms);
 		return { code: 200, data: res, msg: 'ok' }
 	}
 
@@ -122,25 +98,13 @@ class Gifts extends Base {
 	@post()
 	async delete(ctx: Ctx): Result {
 		const { id } = ctx.request.body;
-		const res = await gifts.update({
-			hidden: 1,
-		}, {
-			where: { id }
-		});
+		const res = await gifts.createQueryBuilder().update().set({ hidden: 1 }).where('id = :id', { id }).execute();
 		return { code: 200, data: res, msg: 'ok' }
 	}
 
 	@get()
 	async typeList() {
-		return await gifts.findAll({
-			attributes: [['type', 'value']],
-			group: 'type',
-			where: {
-				type: {
-					[Op.not]: null,
-				}
-			}
-		})
+		return await gifts.createQueryBuilder('gifts').select(['type as value']).where('gifts.type is not null').groupBy('gifts.type').getRawMany();
 	}
 }
 export default Gifts;
