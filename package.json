@@ -15,6 +15,8 @@
     "type": "tsc --noEmit"
   },
   "dependencies": {
+    "@socket.io/cluster-adapter": "^0.1.0",
+    "@socket.io/sticky": "^1.0.1",
     "cross-env": "^7.0.3",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",

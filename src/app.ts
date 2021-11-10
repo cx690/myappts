@@ -8,12 +8,22 @@ import 'reflect-metadata';
 import { logger } from './config/logger.js';
 import koaJwt from 'koa-jwt';
 import { Server } from 'socket.io';
+// @ts-ignore 这个逗比自己没有类型，在其他.d.ts文件中声明了ts-node仍然报错
+import { setupMaster, setupWorker } from "@socket.io/sticky";
+import { createAdapter, setupPrimary } from "@socket.io/cluster-adapter";
 import { registWs } from './ws.js';
 import { clg } from './utils/index.js';
 import connectDb from './entity.js';
 
 if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "development") {
     console.log(`Primary ${process.pid} is running`);/* eslint-disable-line no-console */
+    const httpServer = createServer();
+    // setup sticky sessions
+    setupMaster(httpServer, {
+        loadBalancingMethod: "least-connection",
+    });
+    // setup connections between the workers
+    setupPrimary();
 
     // 衍生工作进程。    
     const numCPUs = cpus().length;
@@ -24,6 +34,8 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
     cluster.on('exit', (worker, code, signal) => {
         console.log(`worker ${worker.process.pid} died,code:${code},signal:${signal} !`);/* eslint-disable-line no-console */
     });
+
+    httpServer.listen(3000);
 } else {
     const app = new koa();
 
@@ -69,6 +81,12 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
         cookie: true
     });
 
+    // use the cluster adapter
+    process.env.NODE_ENV !== "development" && io.adapter(createAdapter());
+
+    // setup connection with the primary process
+    process.env.NODE_ENV !== "development" && setupWorker(io);
+
     async function run() {
         await connectDb();
         const routes = await regist();
@@ -83,7 +101,7 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
             }
         })
         console.log('app started at port 3000...');/* eslint-disable-line no-console */
-        server.listen(3000);
+        process.env.NODE_ENV === "development" && server.listen(3000);
     }
 
     run();

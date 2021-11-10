@@ -90,6 +90,19 @@
   resolved "https://registry.nlark.com/@sindresorhus/is/download/@sindresorhus/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha1-n7OjzzEyMoFR81PeRjLgHlIQK+o=
 
+"@socket.io/cluster-adapter@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/@socket.io/cluster-adapter/-/cluster-adapter-0.1.0.tgz#4d47642372384274454ddfadbe69ff7aca21e124"
+  integrity sha512-8fSpsJxsFzOt4t3kZ19DF/s7vAMz5OVSHjAu8ekegf1/VY10idbBlhgAgM6cP8tupQt+goKA5OxIs3HKgbBppg==
+  dependencies:
+    debug "~4.3.1"
+    socket.io-adapter "~2.3.0"
+
+"@socket.io/sticky@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/@socket.io/sticky/download/@socket.io/sticky-1.0.1.tgz#d0ea2f2da7177ba900c7065c92c8af39915fbcdf"
+  integrity sha1-0OovLacXe6kAxwZcksivOZFfvN8=
+
 "@sqltools/formatter@^1.2.2":
   version "1.2.3"
   resolved "https://registry.npm.taobao.org/@sqltools/formatter/download/@sqltools/formatter-1.2.3.tgz#1185726610acc37317ddab11c3c7f9066966bd20"
@@ -2583,7 +2596,7 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-socket.io-adapter@~2.3.2:
+socket.io-adapter@~2.3.0, socket.io-adapter@~2.3.2:
   version "2.3.2"
   resolved "https://registry.nlark.com/socket.io-adapter/download/socket.io-adapter-2.3.2.tgz?cache=0&sync_timestamp=1630131663074&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fsocket.io-adapter%2Fdownload%2Fsocket.io-adapter-2.3.2.tgz#039cd7c71a52abad984a6d57da2c0b7ecdd3c289"
   integrity sha1-A5zXxxpSq62YSm1X2iwLfs3Twok=
