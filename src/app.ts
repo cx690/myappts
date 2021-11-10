@@ -106,5 +106,5 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
 
     run();
 
-    console.log(`Worker ${process.pid} started`);/* eslint-disable-line no-console */
+    process.env.NODE_ENV !== "development" && console.log(`Worker ${process.pid} started`);/* eslint-disable-line no-console */
 }
