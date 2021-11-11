@@ -36,3 +36,16 @@ export function clg(msg: any, recordLog = false, talk?: (...arsg: any[]) => any 
         logger.info(msg);
     }
 }
+
+/** 根据某个字段去重数组 */
+export function filter(arr: Record<string, any>[], key = 'id') {
+    const temp: any[] = [];
+    return arr.filter(item => {
+        if (temp.includes(item[key])) {
+            return false;
+        } else {
+            temp.push(item[key]);
+            return true;
+        }
+    })
+}

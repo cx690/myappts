@@ -7,15 +7,8 @@ import { accessLogger } from "../config/logger.js";
 import { getRepository } from 'typeorm';
 import type _User from '../entities/user.js';
 import _Chat from '../entities/chat.js';
+import { filter } from "../utils/index.js";
 const chat = getRepository(_Chat);
-
-export const userList: (_User & Record<string, any>)[] = [];
-function deleteUser(id: string) {
-    const index = userList.findIndex(v => v.socketId === id)
-    if (index > -1) {
-        userList.splice(index, 1);
-    }
-}
 
 @Namespace()
 class Chat extends Wsbase {
@@ -25,8 +18,8 @@ class Chat extends Wsbase {
         if (!token) return;
         const user = jwt.decode(token) as UserAll;
         Object.assign(user, { socketId: socket.id });
-        socket.user = user;
-        userList.push(user);
+        socket.data.user = user;
+        const userList = filter((await this.namespace.fetchSockets()).map(socket => socket.data.user) as UserAll[]);
         socket.emit('login', socket.id);
         socket.emit('users', userList);
         socket.broadcast.emit('users', userList);
@@ -37,7 +30,7 @@ class Chat extends Wsbase {
     @on()
     async chat(socket: Socket, content: string) {
         if (content !== '') {
-            const user = socket.user;
+            const user = socket.data.user;
             const insert = chat.create({
                 userName: user.userName,
                 userId: user.id,
@@ -57,9 +50,9 @@ class Chat extends Wsbase {
 
     @on()
     async disconnect(socket: Socket) {
-        deleteUser(socket.user?.socketId);
-        socket.broadcast.emit('users', userList);
-        accessLogger.info(`用户离开聊天室：${socket.user?.userName} id:${socket.user?.id}`);
+        const userList = (await this.namespace.fetchSockets()).map(socket => socket.data.user).filter((user?: UserAll) => user && user.id !== socket.data.user.id) as UserAll[];
+        socket.broadcast.emit('users', filter(userList));
+        accessLogger.info(`用户离开聊天室：${socket.data.user?.userName} id:${socket.data.user?.id}`);
         setTimeout(() => {
             socket.disconnect(true);
         }, 5000);
@@ -72,11 +65,4 @@ function getRecord(time: number = Date.now()) {
     return chat.createQueryBuilder().where('createdAt <= :time', { time }).orderBy('createdAt', 'DESC').limit(10).getMany();
 }
 
-type UserAll = _User & { id: number, socketId: string }
-
-declare module 'socket.io' {
-    class Socket {
-        /** 用户数据 */
-        user: UserAll;
-    }
-}
+type UserAll = _User & { socketId: string }

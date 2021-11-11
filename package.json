@@ -7,10 +7,10 @@
   "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=development npx nodemon",
+    "serve": "cross-env NODE_ENV=production npx nodemon",
     "db": "cross-env NODE_ENV=development node --loader ts-node/esm src/init-db.ts",
     "build": "npm run lint && node copy.js && tsc --outDir dist && npx replace 'process.env.NODE_ENV' '`production`' ./dist -r --include='*.js' --silent",
     "replace": "npx replace 'process.env.NODE_ENV' '`production`' ./dist -r --include='*.js'",
-    "serve": "node dist/app",
     "lint": "eslint src/** --ext .js,.ts",
     "type": "tsc --noEmit"
   },

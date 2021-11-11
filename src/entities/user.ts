@@ -13,7 +13,7 @@ class User extends BaseEntity {
 	userName: string
 
 	@Column({ select: false })
-	password: string
+	password?: string
 
 	@Column({ nullable: true })
 	header: string
