@@ -16,6 +16,7 @@ import { clg } from './utils/index.js';
 import connectDb from './entity.js';
 
 if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "development") {
+    console.log(`Primary ${process.pid} is running`);/* eslint-disable-line no-console */
     const httpServer = createServer();
     // setup sticky sessions
     setupMaster(httpServer, {
@@ -23,9 +24,6 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
     });
     // setup connections between the workers
     setupPrimary();
-
-    httpServer.listen(3000);
-    console.log(`Primary ${process.pid} started at port 3000...`);/* eslint-disable-line no-console */
 
     // 衍生工作进程。    
     const numCPUs = cpus().length;
@@ -100,13 +98,12 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
                 ctx.response.status = 404;
             }
         })
-        if (process.env.NODE_ENV === "development") {
-            server.listen(3000);
-            console.log('app started at port 3000...');/* eslint-disable-line no-console */
-        }
+
+        server.listen(3000);
+        console.log('app started at port 3000...');/* eslint-disable-line no-console */
     }
 
     run();
 
-    process.env.NODE_ENV !== "development" && console.log(`Worker ${process.pid} started at port 3000...`);/* eslint-disable-line no-console */
+    process.env.NODE_ENV !== "development" && console.log(`Worker ${process.pid} started`);/* eslint-disable-line no-console */
 }
