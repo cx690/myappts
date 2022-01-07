@@ -15,7 +15,7 @@ import { registWs } from './ws.js';
 import { clg } from './utils/index.js';
 import connectDb from './entity.js';
 
-if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "development") {
+if ((cluster.isPrimary || cluster.isMaster) && process.env.Cluster === "true") {
     console.log(`Primary ${process.pid} is running`);/* eslint-disable-line no-console */
     const httpServer = createServer();
     // setup sticky sessions
@@ -32,7 +32,10 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
     }
 
     cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} died,code:${code},signal:${signal} !`);/* eslint-disable-line no-console */
+        clg(`worker ${worker.process.pid} died,code:${code},signal:${signal} !`, true);
+        code !== 0 && setTimeout(() => {
+            cluster.fork();
+        }, 10000);
     });
 } else {
     const app = new koa();
@@ -80,10 +83,10 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
     });
 
     // use the cluster adapter
-    process.env.NODE_ENV !== "development" && io.adapter(createAdapter());
+    process.env.Cluster === "true" && io.adapter(createAdapter());
 
     // setup connection with the primary process
-    process.env.NODE_ENV !== "development" && setupWorker(io);
+    process.env.Cluster === "true" && setupWorker(io);
 
     async function run() {
         await connectDb();
@@ -100,10 +103,7 @@ if ((cluster.isPrimary || cluster.isMaster) && process.env.NODE_ENV !== "develop
         })
 
         server.listen(3000);
-        console.log('app started at port 3000...');/* eslint-disable-line no-console */
+        console.log(`app ${process.env.Cluster === "true" ? process.pid : ''} started at port ${process.env.Port || 3000}...`);/* eslint-disable-line no-console */
     }
-
     run();
-
-    process.env.NODE_ENV !== "development" && console.log(`Worker ${process.pid} started`);/* eslint-disable-line no-console */
 }
